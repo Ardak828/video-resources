@@ -22,7 +22,6 @@
 
     /* The video is constrained to a visible area in the center */
     video {
-      /* FIX 1: Use max dimensions to ensure controls are not pushed off screen */
       max-width: 95vw; 
       max-height: 95vh;
       width: auto;
@@ -35,20 +34,19 @@
       border-radius: 8px; /* Added rounded corners for aesthetics */
     }
 
-    /* Overlay button */
+    /* Overlay container that covers the video area */
     #overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(0,0,0,0.85);
+      /* Soft, dark transparency over the video area */
+      background: rgba(0,0,0,0.7); 
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
       color: white;
-      font-size: 2rem;
       cursor: pointer;
       z-index: 2;
       transition: opacity 0.3s ease;
@@ -59,29 +57,45 @@
       pointer-events: none;
     }
 
+    /* Styling for the simple circular Play button */
     #overlay span {
-      padding: 1em 2em;
-      border: 2px solid white;
-      border-radius: 8px;
-      background: rgba(255,255,255,0.15);
-      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-      transition: background 0.2s;
+      /* --- Simple UI Changes Start Here --- */
+      padding: 0; 
+      border: none; 
+      /* Translucent white background for the icon */
+      background: rgba(255,255,255,0.2); 
+      color: white; 
+      box-shadow: 0 0 20px rgba(0,0,0,0.8); 
+      
+      width: 100px; /* Size of the button area */
+      height: 100px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50%; /* Circular shape */
+      font-size: 4rem; /* Large icon size */
+      transition: background 0.2s, transform 0.2s;
+      line-height: 1; 
+      /* Minor padding to center the triangle optically */
+      padding-left: 8px; 
+      /* --- Simple UI Changes End Here --- */
     }
     
     #overlay span:hover {
-      background: rgba(255,255,255,0.25);
+      background: rgba(255,255,255,0.3);
+      transform: scale(1.05);
     }
   </style>
 </head>
 <body>
   
-  <!-- FIX 2: Removed 'autoplay' attribute to avoid background mode conflicts -->
   <video id="myVideo" muted loop playsinline>
     <source src="Part For Insta (3) (2)-2.mp4" type="video/mp4">
     Your browser does not support the video tag.
   </video>
 
-  <div id="overlay"><span>▶ Tap to Play & Unmute</span></div>
+  <!-- Simple Play icon -->
+  <div id="overlay"><span>▶</span></div>
 
   <script>
     const video = document.getElementById('myVideo');
@@ -96,16 +110,16 @@
       video.controls = true;
       video.loop = false; 
 
-      // 3. FIX 3: Force the browser to re-evaluate the video state for control display
+      // 3. Force the browser to re-evaluate the video state for control display
       video.load(); 
 
       // 4. Attempt to play
       try {
         await video.play();
       } catch (err) {
-        // If play fails (e.g., if the user is in low power mode on iOS)
         console.error('Playback error:', err);
-        // Re-display the overlay with an error message or fallback logic here if needed
+        // If play fails, potentially show a message or button again
+        overlay.classList.remove('hidden');
       }
     });
   </script>
