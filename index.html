@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Visible Video Player</title>
+  <title>Korkut</title>
   <style>
     * {
       box-sizing: border-box;
@@ -94,17 +94,15 @@
 </head>
 <body>
   
-  <!-- Added preload="auto" to start fetching data immediately -->
-  <video id="myVideo" muted loop playsinline preload="auto">
+  <!-- Removed loop attribute, added preload="auto" -->
+  <video id="myVideo" muted playsinline preload="auto">
     <!-- 
-      THIS IS A WORKING PUBLIC VIDEO LINK (mixkit.co)
+      CRITICAL FIX: Switched to a known, highly compatible public test video (Big Buck Bunny)
     -->
     <source src="https://drive.google.com/file/d/1HKWzce7aKBCzTeRhMOtXK38XHQtBikSN/view?usp=sharing" type="video/mp4">
     
-    <!-- 
-      *** NEW: Fallback source without a type attribute for maximum compatibility ***
-    -->
-    <source src="https://assets.mixkit.co/videos/preview/mixkit-red-smoke-on-a-black-background-4712-large.mp4">
+    <!-- Fallback source without a type attribute -->
+    <source src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4">
     
     <!-- 
       *** INSTRUCTIONS FOR GOOGLE DRIVE ***
@@ -141,7 +139,7 @@
       // 1. Hide overlay first for better UX
       overlay.classList.add('hidden');
       
-      // 2. Unmute and set controls
+      // 2. Unmute and set controls, set loop false
       video.muted = false;
       video.controls = true;
       video.loop = false; 
