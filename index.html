@@ -57,9 +57,9 @@
       pointer-events: none;
     }
 
-    /* Styling for the simple circular Play button */
-    #overlay span {
-      /* --- Simple UI Changes Start Here --- */
+    /* Styling for the simple circular Play button container */
+    #play-icon-container {
+      /* --- SVG Icon Styling --- */
       padding: 0; 
       border: none; 
       /* Translucent white background for the icon */
@@ -73,17 +73,22 @@
       justify-content: center;
       align-items: center;
       border-radius: 50%; /* Circular shape */
-      font-size: 4rem; /* Large icon size */
       transition: background 0.2s, transform 0.2s;
-      line-height: 1; 
-      /* Minor padding to center the triangle optically */
-      padding-left: 8px; 
-      /* --- Simple UI Changes End Here --- */
+      
+      /* Ensure the SVG is centered */
+      transform: translateX(4px); /* Minor optical adjustment for the triangle shape */
     }
     
-    #overlay span:hover {
+    #play-icon-container:hover {
       background: rgba(255,255,255,0.3);
-      transform: scale(1.05);
+      transform: scale(1.05) translateX(4px);
+    }
+    
+    /* Style the SVG icon itself */
+    #play-icon-container svg {
+        width: 40px;
+        height: 40px;
+        fill: white;
     }
   </style>
 </head>
@@ -94,8 +99,14 @@
     Your browser does not support the video tag.
   </video>
 
-  <!-- Simple Play icon -->
-  <div id="overlay"><span>▶</span></div>
+  <!-- Replaced Unicode character with clean, inline SVG -->
+  <div id="overlay">
+    <div id="play-icon-container">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M6 3l15 9-15 9V3z"/>
+        </svg>
+    </div>
+  </div>
 
   <script>
     const video = document.getElementById('myVideo');
