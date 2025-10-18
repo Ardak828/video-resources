@@ -1,45 +1,44 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Responsive Video with Controls</title>
+    <title>Korkut</title>
     <style>
         body {
             margin: 0;
             padding: 0;
             background-color: black;
             overflow: hidden;
-            /* Ensures the body takes up the entire viewport */
             width: 100vw;
             height: 100vh;
         }
 
-        /* Video Styling for Responsive/Background Fit */
-        #myVideo {
+        /* 1. Wrapper handles the full-screen/background effect */
+        #video-bg-container {
             position: fixed;
-            top: 50%;
-            left: 50%;
-            min-width: 100%;
-            min-height: 100%;
-            width: auto;
-            height: auto;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden; /* Hide any parts of the video that exceed the screen */
             z-index: -100;
-            transform: translate(-50%, -50%);
-            object-fit: contain; 
-            
-            /* Initially hide the native controls */
-            display: block;
-            opacity: 1; 
-            transition: opacity 0.5s;
         }
 
-        /* Overlay Button/Prompt Styling */
+        /* 2. Video element scales to fill the container without aggressive positioning */
+        #myVideo {
+            width: 100%;
+            height: 100%;
+            /* Use 'contain' to ensure the whole video is visible */
+            object-fit: contain; 
+        }
+
+        /* Overlay Button/Prompt Styling (Remains the same) */
         #unmuteButton {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay */
+            background-color: rgba(0, 0, 0, 0.5); 
             display: flex;
             justify-content: center;
             align-items: center;
@@ -51,18 +50,16 @@
             font-family: sans-serif;
             text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
         }
-
-        #unmuteButton:hover {
-            background-color: rgba(0, 0, 0, 0.65);
-        }
     </style>
 </head>
 <body>
 
-    <video id="myVideo" autoplay loop muted playsinline>
-        <source src="Part For Insta (3) (2)-2.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
+    <div id="video-bg-container">
+        <video id="myVideo" autoplay loop muted playsinline>
+            <source src="Part For Insta (3) (2)-2.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
 
     <button id="unmuteButton">
         ▶ TAP TO PLAY & UNMUTE
@@ -72,19 +69,17 @@
         document.getElementById('unmuteButton').addEventListener('click', function() {
             const video = document.getElementById('myVideo');
             
-            // 1. UNLOCK SOUND (REQUIRED USER GESTURE)
+            // 1. UNLOCK SOUND
             video.muted = false;
             
-            // 2. SHOW CONTROLS
-            // The 'controls' attribute must be added directly to the element.
+            // 2. SHOW CONTROLS (This is now less likely to conflict)
             video.setAttribute('controls', 'true');
             
-            // 3. Ensure playback starts/resumes (important on some browsers)
+            // 3. Ensure playback starts/resumes
             const playPromise = video.play();
             
             if (playPromise !== undefined) {
                 playPromise.catch(error => {
-                    // Autoplay was prevented despite the user click (rare, but possible)
                     console.warn("Playback prevented:", error);
                 });
             }
