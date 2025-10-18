@@ -1,13 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Video Playback</title>
+    <title>Responsive Video with Controls</title>
     <style>
-        /* Optional: Hide scrollbars and set background to black */
-        body { margin: 0; padding: 0; background-color: black; overflow: hidden; }
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            overflow: hidden;
+            /* Ensures the body takes up the entire viewport */
+            width: 100vw;
+            height: 100vh;
+        }
 
-        /* Full-screen video styling */
-        video {
+        /* Video Styling for Responsive/Background Fit */
+        #myVideo {
             position: fixed;
             top: 50%;
             left: 50%;
@@ -17,16 +24,75 @@
             height: auto;
             z-index: -100;
             transform: translate(-50%, -50%);
-            object-fit: contain; /* Ensures the whole video is visible, letter-boxing if necessary */
+            object-fit: contain; 
+            
+            /* Initially hide the native controls */
+            display: block;
+            opacity: 1; 
+            transition: opacity 0.5s;
+        }
+
+        /* Overlay Button/Prompt Styling */
+        #unmuteButton {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            cursor: pointer;
+            border: none;
+            color: white;
+            font-size: 2em;
+            font-family: sans-serif;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+        }
+
+        #unmuteButton:hover {
+            background-color: rgba(0, 0, 0, 0.65);
         }
     </style>
 </head>
 <body>
 
-<video autoplay loop muted playsinline>
-    <source src="Part For Insta (3) (2)-2.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-</video>
+    <video id="myVideo" autoplay loop muted playsinline>
+        <source src="Part For Insta (3) (2)-2.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <button id="unmuteButton">
+        ▶ TAP TO PLAY & UNMUTE
+    </button>
+
+    <script>
+        document.getElementById('unmuteButton').addEventListener('click', function() {
+            const video = document.getElementById('myVideo');
+            
+            // 1. UNLOCK SOUND (REQUIRED USER GESTURE)
+            video.muted = false;
+            
+            // 2. SHOW CONTROLS
+            // The 'controls' attribute must be added directly to the element.
+            video.setAttribute('controls', 'true');
+            
+            // 3. Ensure playback starts/resumes (important on some browsers)
+            const playPromise = video.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    // Autoplay was prevented despite the user click (rare, but possible)
+                    console.warn("Playback prevented:", error);
+                });
+            }
+
+            // 4. HIDE THE OVERLAY BUTTON
+            this.style.display = 'none';
+        });
+    </script>
 
 </body>
 </html>
