@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Korkut</title>
+  <title>Korkut, 2024, Anvar Musrepov</title>
   <style>
     * {
       box-sizing: border-box;
@@ -94,24 +94,8 @@
 </head>
 <body>
   
-  <!-- Removed loop attribute, added preload="auto" -->
-  <video id="myVideo" muted playsinline preload="auto">
-    <!-- 
-      CRITICAL FIX: Switched to a known, highly compatible public test video (Big Buck Bunny)
-    -->
-    <source src="https://drive.google.com/file/d/1gWCNhkxyCPKKUCPH5CW-7e5Jjnv0ehQu/view?usp=sharing" type="video/mp4">
-    
-    <!-- Fallback source without a type attribute -->
-    <source src="https://drive.google.com/file/d/1gWCNhkxyCPKKUCPH5CW-7e5Jjnv0ehQu/view?usp=sharing">
-    
-    <!-- 
-      *** INSTRUCTIONS FOR GOOGLE DRIVE ***
-      1. Get your file ID (e.g., d/FILE_ID/view).
-      2. Replace the source link above with this format:
-         https://drive.google.com/uc?export=download&id=YOUR_FILE_ID_HERE
-      3. Ensure your Google Drive file is set to "Anyone with the link" permission.
-    -->
-    
+  <video id="myVideo" muted loop playsinline>
+    <source src="Comp 1-2.mp4" type="video/mp4">
     Your browser does not support the video tag.
   </video>
 
@@ -127,19 +111,12 @@
   <script>
     const video = document.getElementById('myVideo');
     const overlay = document.getElementById('overlay');
-    
-    // Add error handler for debugging
-    video.onerror = function() {
-        console.error("Video failed to load. Check the source URL, permissions, and file format.");
-        // If the video fails to load, we can bring the overlay back
-        overlay.classList.remove('hidden');
-    };
 
     overlay.addEventListener('click', async () => {
       // 1. Hide overlay first for better UX
       overlay.classList.add('hidden');
       
-      // 2. Unmute and set controls, set loop false
+      // 2. Unmute and set controls
       video.muted = false;
       video.controls = true;
       video.loop = false; 
@@ -151,7 +128,7 @@
       try {
         await video.play();
       } catch (err) {
-        console.error('Playback error (user gesture failed):', err);
+        console.error('Playback error:', err);
         // If play fails, potentially show a message or button again
         overlay.classList.remove('hidden');
       }
