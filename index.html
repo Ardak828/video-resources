@@ -94,13 +94,26 @@
 </head>
 <body>
   
-  <video id="myVideo" muted loop playsinline>
+  <!-- Added preload="auto" to start fetching data immediately -->
+  <video id="myVideo" muted loop playsinline preload="auto">
     <!-- 
-      *** PASTE YOUR GOOGLE DRIVE DIRECT LINK HERE ***
-      Format: https://drive.google.com/uc?export=download&id=YOUR_GOOGLE_DRIVE_FILE_ID_HERE
-      Make sure your file sharing permissions are set to "Anyone with the link".
+      THIS IS A WORKING PUBLIC VIDEO LINK (mixkit.co)
     -->
     <source src="https://drive.google.com/file/d/1HKWzce7aKBCzTeRhMOtXK38XHQtBikSN/view?usp=sharing" type="video/mp4">
+    
+    <!-- 
+      *** NEW: Fallback source without a type attribute for maximum compatibility ***
+    -->
+    <source src="https://assets.mixkit.co/videos/preview/mixkit-red-smoke-on-a-black-background-4712-large.mp4">
+    
+    <!-- 
+      *** INSTRUCTIONS FOR GOOGLE DRIVE ***
+      1. Get your file ID (e.g., d/FILE_ID/view).
+      2. Replace the source link above with this format:
+         https://drive.google.com/uc?export=download&id=YOUR_FILE_ID_HERE
+      3. Ensure your Google Drive file is set to "Anyone with the link" permission.
+    -->
+    
     Your browser does not support the video tag.
   </video>
 
@@ -116,6 +129,13 @@
   <script>
     const video = document.getElementById('myVideo');
     const overlay = document.getElementById('overlay');
+    
+    // Add error handler for debugging
+    video.onerror = function() {
+        console.error("Video failed to load. Check the source URL, permissions, and file format.");
+        // If the video fails to load, we can bring the overlay back
+        overlay.classList.remove('hidden');
+    };
 
     overlay.addEventListener('click', async () => {
       // 1. Hide overlay first for better UX
@@ -133,7 +153,7 @@
       try {
         await video.play();
       } catch (err) {
-        console.error('Playback error:', err);
+        console.error('Playback error (user gesture failed):', err);
         // If play fails, potentially show a message or button again
         overlay.classList.remove('hidden');
       }
