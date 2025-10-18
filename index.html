@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Korkut</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User-Activated Video Player</title>
     <style>
+        /* Base styling */
         body {
             margin: 0;
             padding: 0;
@@ -10,35 +12,54 @@
             overflow: hidden;
             width: 100vw;
             height: 100vh;
+            font-family: 'Inter', sans-serif;
         }
 
-        /* 1. Wrapper handles the full-screen/background effect */
+        /* 1. Wrapper handles the full-screen background effect */
         #video-bg-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            overflow: hidden; /* Hide any parts of the video that exceed the screen */
+            overflow: hidden; 
             z-index: -100;
+            /* Prevents the background container from intercepting clicks meant for controls */
+            pointer-events: none; 
         }
 
         /* 2. Video element scales to fill the container without aggressive positioning */
         #myVideo {
             width: 100%;
             height: 100%;
-            /* Use 'contain' to ensure the whole video is visible */
+            /* 'contain' ensures the whole video frame is always visible */
             object-fit: contain; 
+            transition: all 0.3s ease;
         }
 
-        /* Overlay Button/Prompt Styling (Remains the same) */
+        /* 3. ACTIVE CLASS: Applied after user click to make the video interactive */
+        #myVideo.video-active {
+            /* Bring it forward so controls are clickable, and occupy the whole viewport */
+            position: absolute; 
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1; 
+            pointer-events: auto; /* Allows interaction with controls */
+            
+            /* Use 'cover' to fill the screen if you prefer cropping over black bars */
+            object-fit: cover; 
+        }
+
+        /* Overlay Button/Prompt Styling */
         #unmuteButton {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5); 
+            background-color: rgba(0, 0, 0, 0.75); /* Darker overlay to highlight button */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -46,21 +67,34 @@
             cursor: pointer;
             border: none;
             color: white;
-            font-size: 2em;
-            font-family: sans-serif;
-            text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+            font-size: clamp(1.5em, 5vw, 2.5em); /* Responsive font size */
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+            transition: background-color 0.2s;
+            border-radius: 8px;
+        }
+
+        #unmuteButton:hover {
+            background-color: rgba(0, 0, 0, 0.85);
         }
     </style>
 </head>
 <body>
 
+    <!-- Container that holds the video element for background positioning -->
     <div id="video-bg-container">
+        <!-- Video attributes: 
+             autoplay: starts automatically (muted only)
+             loop: plays continuously
+             muted: required by browsers for autoplay without user gesture
+             playsinline: required on iOS for inline playback (not fullscreen) -->
         <video id="myVideo" autoplay loop muted playsinline>
+            <!-- NOTE: Replace 'my-video.mp4' with your actual video source -->
             <source src="Part For Insta (3) (2)-2.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
     </div>
 
+    <!-- The only interactive element the user needs to start the audio/controls -->
     <button id="unmuteButton">
         ▶ TAP TO PLAY & UNMUTE
     </button>
@@ -69,22 +103,25 @@
         document.getElementById('unmuteButton').addEventListener('click', function() {
             const video = document.getElementById('myVideo');
             
-            // 1. UNLOCK SOUND
+            // 1. UNLOCK SOUND: This is the critical step that requires the user gesture
             video.muted = false;
             
-            // 2. SHOW CONTROLS (This is now less likely to conflict)
+            // 2. SHOW CONTROLS: Adds the native browser controls
             video.setAttribute('controls', 'true');
             
-            // 3. Ensure playback starts/resumes
+            // 3. APPLY ACTIVE CLASS: Promotes the video to the foreground for clickable controls
+            video.classList.add('video-active');
+
+            // 4. Ensure playback starts/resumes 
             const playPromise = video.play();
             
             if (playPromise !== undefined) {
                 playPromise.catch(error => {
-                    console.warn("Playback prevented:", error);
+                    console.warn("Playback prevented despite user interaction:", error);
                 });
             }
 
-            // 4. HIDE THE OVERLAY BUTTON
+            // 5. HIDE THE OVERLAY BUTTON
             this.style.display = 'none';
         });
     </script>
